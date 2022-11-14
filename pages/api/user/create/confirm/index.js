@@ -45,7 +45,7 @@ export default async function (req, res) {
   res
     .status(200)
     .json({
-      message: 'Post successful! Sharing with peers...',
+      message: 'Registration successful! Sharing with peers...',
       tabs,
       posts
     });

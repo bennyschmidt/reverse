@@ -43,7 +43,7 @@ export default async function (req, res) {
   await sendEmail({
     to: email,
     subject: 'Confirm your email on Reverse.',
-    html: `<a href="http://localhost:3000?register=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
+    html: `<a href="http://localhost:3000?user=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
   });
 
   setTimeout(() => dequeue(otp, 'users'), OTP_EXPIRATION);

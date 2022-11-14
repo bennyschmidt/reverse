@@ -8,7 +8,8 @@ import {
   Navigation,
   PostButton,
   Posts,
-  Signup
+  Register,
+  SignupButton
 } from '../components';
 
 import {
@@ -24,6 +25,7 @@ export default function Home () {
   const [posts, setPosts] = useState([]);
   const [tabs, setTabs] = useState([]);
   const [isDraftShown, setIsDraftShown] = useState(false);
+  const [isRegisterShown, setIsRegisterShown] = useState(false);
   const [message, setMessage] = useState('');
 
   const { pathname, query } = router;
@@ -31,8 +33,8 @@ export default function Home () {
   let timeout;
 
   useEffect(() => {
-    const handleQuery = async () => {
-      const response = await fetch(`/api/post/create/confirm?post=${query.post}`);
+    const handleQuery = async type => {
+      const response = await fetch(`/api/${type}/create/confirm?${type}=${query[type]}`);
 
       if (response?.ok) {
         router.replace(
@@ -48,7 +50,11 @@ export default function Home () {
     };
 
     if (query.post) {
-      handleQuery();
+      handleQuery('post');
+    }
+
+    if (query.user) {
+      handleQuery('user');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, query]);
@@ -105,14 +111,37 @@ export default function Home () {
     showNotification(UNKNOWN_ERROR);
   };
 
+  const onCreateUser = async body => {
+    const response = await fetch('/api/user/create', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+
+    if (response?.ok) {
+      setIsRegisterShown(false);
+
+      return handleAPIResponse(response);
+    }
+
+    showNotification(UNKNOWN_ERROR);
+  };
+
   const onClickOverlay = ({ target: { id } }) => {
     if (id === 'draft-overlay') {
       setIsDraftShown(false);
     }
+
+    if (id === 'register-overlay') {
+      setIsRegisterShown(false);
+    }
   };
 
   const onClickPostButton = () => (
-    setIsDraftShown(!isDraftShown)
+    setIsDraftShown(true)
+  );
+
+  const onClickRegisterButton = () => (
+    setIsRegisterShown(true)
   );
 
   return (
@@ -133,6 +162,12 @@ export default function Home () {
         />
       </div>
       <main className={styles.main}>
+        {isRegisterShown && (
+          <Register
+            onClick={onClickOverlay}
+            onRegister={onCreateUser}
+          />
+        )}
         {isDraftShown && (
           <Draft
             onClick={onClickOverlay}
@@ -143,7 +178,7 @@ export default function Home () {
         <div className={styles.grid}>
           <Navigation tabs={tabs} />
           <Posts posts={posts} />
-          <Signup />
+          <SignupButton onClick={onClickRegisterButton} />
         </div>
       </main>
       <footer className={styles.footer}>
