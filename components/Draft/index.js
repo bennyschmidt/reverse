@@ -2,26 +2,26 @@ import { useState } from 'react';
 
 import styles from '../../styles/Home.module.css';
 
-export const Draft = ({ setIsDraftShown }) => {
+export const Draft = ({
+  onClick,
+  onPost
+}) => {
   const [username, setUsername] = useState('benny');
   const [post, setPost] = useState('');
   const [server, setServer] = useState('exactchange.network');
 
-  const onClickOverlay = ({ target: { id }}) => {
-    if (id === 'draft-overlay') {
-      setIsDraftShown(false);
-    }
-  };
-
-  const onClickPost = () => {
-    console.log('clicked "Post"', username, post, server);
-    setIsDraftShown(false);
-  };
+  const onClickPost = () => (
+    onPost({
+      username,
+      post,
+      server
+    })
+  );
 
   return (
     <aside
       className={styles.overlay}
-      onClick={onClickOverlay}
+      onClick={onClick}
       id="draft-overlay"
     >
       <div role="dialog">

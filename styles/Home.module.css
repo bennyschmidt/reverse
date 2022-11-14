@@ -121,7 +121,7 @@
   border: 1px solid #eaeaea;
   border-radius: 1rem;
   padding: 2rem;
-  max-height: 25%;
+  max-height: 20rem;
 }
 
 .cta h3 {
@@ -156,7 +156,7 @@
   top: 0;
   margin: 0;
   background: rgba(255, 255, 255, .75);
-  z-index: 1000;
+  z-index: 900;
 }
 
 .overlay > div {
@@ -190,6 +190,29 @@
 textarea.input {
   min-height: 12rem;
   font: inherit;
+}
+
+.banner,
+.banner-show {
+  position: fixed;
+  top: -5rem;
+  left: .5rem;
+  right: .5rem;
+  height: 3.5rem;
+  width: calc(100% - 1rem);
+  line-height: 3.5rem;
+  padding: 0 1rem;
+  border-radius: 1rem;
+  background: #0070f3;
+  color: white;
+  z-index: 1000;
+  opacity: 0;
+  transition: top .5s ease, opacity .5s ease;
+}
+
+.banner-show {
+  top: .25rem;
+  opacity: 1;
 }
 
 @media (max-width: 974px) {

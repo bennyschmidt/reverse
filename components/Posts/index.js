@@ -10,9 +10,9 @@ export const Posts = ({ posts }) => (
       />
     </p>
     {
-      posts.map(({ authorName, text, date }) => (
+      posts.map(({ author, text, date }) => (
         <div key={text} className={styles.card}>
-          <a href="#">{`@${authorName}`}</a>
+          <a href="#">{`@${author}`}</a>
           <p>{text}</p>
           <a href="#">{date}</a>
         </div>
