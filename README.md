@@ -74,6 +74,10 @@ You can very easily deploy this Next.js app on Vercel, this is the most plug-and
 
 You can also move the Vercel serverless API (the `pages/api/` directory) to its own Node application using [`node-service-core`](https://github.com/bennyschmidt/node-service-core), and deploy it to your favorite cloud platform, or run it on-prem. For the front-end, you can build the React app and deploy it static anywhere.
 
+## Attribution  
+
+Logo design of the letter R, a combination of a goose feather pen by [ruslyeffendi3120760](https://www.vecteezy.com/members/ruslyeffendi3120760) ([source](https://www.vecteezy.com/vector-art/4565911-the-initial-logo-design-of-the-letter-r-a-combination-of-a-goose-feather-pen-is-unique-and-attractive))
+
 -----
 
 # Next.js
