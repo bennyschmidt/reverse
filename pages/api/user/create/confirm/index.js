@@ -1,12 +1,13 @@
-import { getData, create } from '../../../_blockchain';
+import { getComments, create } from '../../../_blockchain';
 import { getStaticData, find } from '../../../_data';
 import { sortByDate } from '../../../_utils';
 
 export default async function (req, res) {
   const { tabs } = getStaticData();
-  const { transactions } = getData();
 
-  if (!tabs || !transactions) {
+  const comments = await getComments();
+
+  if (!tabs || !comments?.transactions) {
     res
       .status(200)
       .json({
@@ -19,10 +20,7 @@ export default async function (req, res) {
     return;
   }
 
-  const posts = sortByDate(
-    transactions.filter(({ type }) => type === 'Comment')
-  );
-
+  const posts = sortByDate(comments.transactions);
   const { user } = req.query;
 
   const content = await find(user, 'users');

@@ -1,12 +1,13 @@
-import { getData } from '../_blockchain';
+import { getComments } from '../_blockchain';
 import { getStaticData } from '../_data';
 import { sortByDate } from '../_utils';
 
-export default function (req, res) {
+export default async function (req, res) {
   const { tabs } = getStaticData();
-  const { transactions } = getData();
 
-  if (!tabs || !transactions) {
+  const comments = await getComments();
+
+  if (!tabs || !comments?.transactions) {
     res
       .status(200)
       .json({
@@ -18,9 +19,7 @@ export default function (req, res) {
     return;
   }
 
-  const posts = sortByDate(
-    transactions.filter(({ type }) => type === 'Comment')
-  );
+  const posts = sortByDate(comments.transactions);
 
   res
     .status(200)

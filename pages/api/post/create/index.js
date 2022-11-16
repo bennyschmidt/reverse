@@ -2,7 +2,7 @@ const {
   OTP_EXPIRATION
 } = process.env;
 
-import { getData } from '../../_blockchain';
+import { getComments, getUsers } from '../../_blockchain';
 import { getStaticData, dequeue, enqueue } from '../../_data';
 import { sortByDate } from '../../_utils';
 
@@ -13,9 +13,12 @@ import {
 
 export default async function (req, res) {
   const { tabs } = getStaticData();
-  const { transactions } = getData();
 
-  if (!tabs || !transactions) {
+  const comments = await getComments();
+
+  const users = await getUsers();
+
+  if (!tabs || !comments?.transactions || !users?.transactions) {
     res
       .status(200)
       .json({
@@ -29,11 +32,7 @@ export default async function (req, res) {
   }
 
   const payload = JSON.parse(req.body);
-
-  const posts = sortByDate(
-    transactions.filter(({ type }) => type === 'Comment')
-  );
-
+  const posts = sortByDate(comments.transactions);
   const text = payload.post.trim();
 
   if (!text || text.length < 2 || text.length > 280) {
@@ -50,7 +49,7 @@ export default async function (req, res) {
   }
 
   const { username } = payload;
-  const user = transactions.find(user => user.username === username);
+  const user = users.transactions.find(user => user.username === username);
 
   if (!user) {
     res

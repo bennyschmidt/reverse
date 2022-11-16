@@ -32,48 +32,6 @@ export default function Home () {
 
   let timeout;
 
-  useEffect(() => {
-    const handleQuery = async type => {
-      const response = await fetch(`/api/${type}/create/confirm?${type}=${query[type]}`);
-
-      if (response?.ok) {
-        router.replace(
-          pathname,
-          undefined,
-          { shallow: true }
-        );
-
-        return handleAPIResponse(response);
-      }
-
-      showNotification(UNKNOWN_ERROR);
-    };
-
-    if (query.post) {
-      handleQuery('post');
-    }
-
-    if (query.user) {
-      handleQuery('user');
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, query]);
-
-  useEffect(() => {
-    const fetchPage = async () => {
-      const response = await fetch('/api/posts');
-
-      if (response?.ok) {
-        return handleAPIResponse(response);
-      }
-
-      showNotification(UNKNOWN_ERROR);
-    };
-
-    fetchPage();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const showNotification = message => {
     clearTimeout(timeout);
     setMessage(message);
@@ -142,6 +100,60 @@ export default function Home () {
 
   const onClickRegisterButton = () => (
     setIsRegisterShown(true)
+  );
+
+  const onChangeURL = () => {
+    const handleQuery = async (type, otp) => {
+      const response = await fetch(`/api/${type}/create/confirm?${type}=${otp}`);
+
+      if (response?.ok) {
+        router.replace(
+          pathname,
+          undefined,
+          { shallow: true }
+        );
+
+        return handleAPIResponse(response);
+      }
+
+      showNotification(UNKNOWN_ERROR);
+    };
+
+    if (query.post) {
+      handleQuery('post', query.post);
+    }
+
+    if (query.user) {
+      handleQuery('user', query.user);
+    }
+  };
+
+  const onLoad = () => {
+    const fetchPage = async () => {
+      const response = await fetch('/api/posts');
+
+      if (response?.ok) {
+        return handleAPIResponse(response);
+      }
+
+      showNotification(UNKNOWN_ERROR);
+    };
+
+    fetchPage();
+  };
+
+  useEffect(
+    onChangeURL,
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pathname, query]
+  );
+
+  useEffect(
+    onLoad,
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   return (

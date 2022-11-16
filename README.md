@@ -1,3 +1,83 @@
+# Reverse
+
+Deploy a decentralized Twitter-like community in minutes.
+
+## Screenshots
+
+Reverse (desktop):
+
+<img src="screenshot-desktop.png" />
+
+Reverse (mobile):
+
+<img src="screenshot-mobile.png" />
+
+## Live Instances
+
+None yet.
+
+## Setup
+
+See `.env.example`.
+
+MongoDB is used to temporarily cache users and posts in the queue.
+
+```
+MONGO_URI=
+DB_NAME=
+```
+
+Dereva is the underlying content blockchain where users and posts are retained in a peer-to-peer network.
+
+```
+DEREVA_API_KEY=
+DEREVA_URI=
+DEREVA_ADDRESS=
+```
+
+Nodemailer is used for email dispatch.
+
+```
+MAIL_HOST=
+MAIL_NAME=
+MAIL_PASS=
+MAIL_SERVICE=
+```
+
+One-time passwords are used to authenticate creating users and posts.
+
+```
+OTP_EXPIRATION=
+```
+
+## Run the app
+
+```
+npm run dev
+```
+
+## Build & run
+
+```
+  npm run build
+```
+
+`npm start` to run the build
+
+## Deploy
+
+#### Vercel
+
+You can very easily deploy this Next.js app on Vercel, this is the most plug-and-play option.
+
+#### Elsewhere
+
+You can also move the Vercel serverless API (the `pages/api/` directory) to its own Node application using [`node-service-core`](https://github.com/bennyschmidt/node-service-core), and deploy it to your favorite cloud platform, or run it on-prem. For the front-end, you can build the React app and deploy it static anywhere.
+
+-----
+
+# Next.js
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

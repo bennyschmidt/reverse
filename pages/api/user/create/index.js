@@ -2,7 +2,7 @@ const {
   OTP_EXPIRATION
 } = process.env;
 
-import { getData } from '../../_blockchain';
+import { getComments } from '../../_blockchain';
 import { getStaticData, dequeue, enqueue } from '../../_data';
 import { sortByDate } from '../../_utils';
 
@@ -13,9 +13,10 @@ import {
 
 export default async function (req, res) {
   const { tabs } = getStaticData();
-  const { transactions } = getData();
 
-  if (!tabs || !transactions) {
+  const comments = await getComments();
+
+  if (!tabs || !comments?.transactions) {
     res
       .status(200)
       .json({
@@ -29,10 +30,7 @@ export default async function (req, res) {
   }
 
   const payload = JSON.parse(req.body);
-
-  const posts = sortByDate(
-    transactions.filter(({ type }) => type === 'Comment')
-  );
+  const posts = sortByDate(comments.transactions);
 
   // TODO: Validate `email` & `username`
   const { email, username } = payload;

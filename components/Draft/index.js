@@ -2,13 +2,15 @@ import { useState } from 'react';
 
 import styles from '../../styles/Home.module.css';
 
+const PEER_SERVER = 'exactchange.network';
+
 export const Draft = ({
   onClick,
   onPost
 }) => {
-  const [username, setUsername] = useState('benny');
+  const [username, setUsername] = useState('');
   const [post, setPost] = useState('');
-  const [server, setServer] = useState('exactchange.network');
+  const [server, setServer] = useState(PEER_SERVER);
 
   const onClickPost = () => (
     onPost({
@@ -28,14 +30,14 @@ export const Draft = ({
         <div role="form">
           <section>
             <label htmlFor="username">Post as:</label>
-            <select
+            <input
               name="username"
               id="username"
               className={styles.input}
+              placeholder="Username"
+              value={username}
               onChange={({ target: { value }}) => setUsername(value)}
-            >
-              <option value={username}>{username}</option>
-            </select>
+            />
           </section>
           <section>
             <textarea
