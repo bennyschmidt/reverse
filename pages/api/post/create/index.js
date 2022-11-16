@@ -1,6 +1,9 @@
 const {
+  HOST,
   OTP_EXPIRATION
 } = process.env;
+
+import { v4 as uuidv4 } from 'uuid';
 
 import { getComments, getUsers } from '../../_blockchain';
 import { getStaticData, dequeue, enqueue } from '../../_data';
@@ -66,13 +69,12 @@ export default async function (req, res) {
 
   const { email } = user;
 
-  // TODO: Generate secure OTP
-  const otp = 'test-12345678-aaaa-bbbb-ccccdddd';
+  const otp = uuidv4();
 
   await sendEmail({
     to: email,
     subject: 'Confirm your post on Reverse.',
-    html: `<a href="http://localhost:3000?post=${otp}" target="_blank">Authorize Post</a><br />If you do not authorize this post, <strong>do not</strong> click the link.`
+    html: `<a href="${HOST}?post=${otp}" target="_blank">Authorize Post</a><br />If you do not authorize this post, <strong>do not</strong> click the link.`
   });
 
   setTimeout(() => dequeue(otp, 'posts'), OTP_EXPIRATION);
