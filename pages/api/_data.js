@@ -8,7 +8,7 @@ const getStaticData = () => ({
     },
     {
       text: 'Settings',
-      href: '/settings'
+      href: '#'
     }
   ]
 });

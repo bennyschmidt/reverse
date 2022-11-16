@@ -7,6 +7,7 @@ export const Posts = ({ posts }) => (
         placeholder="Search"
         role="search"
         className={styles.search}
+        disabled
       />
     </p>
     {

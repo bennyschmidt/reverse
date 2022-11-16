@@ -215,6 +215,11 @@ textarea.input {
   opacity: 1;
 }
 
+.search,
+.tab:last-of-type a {
+  cursor: not-allowed;
+}
+
 @media (max-width: 974px) {
   .grid {
     width: 100%;
