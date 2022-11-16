@@ -20,7 +20,7 @@ export const Register = ({
     <aside
       className={styles.overlay}
       onClick={onClick}
-      id="signup-overlay"
+      id="register-overlay"
     >
       <div role="dialog">
         <div role="form">
