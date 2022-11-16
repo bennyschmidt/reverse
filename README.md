@@ -6,11 +6,11 @@ Deploy a decentralized Twitter-like community in minutes.
 
 Reverse (desktop):
 
-<img src="screenshot-desktop.png" />
+<img src="screenshot-0.png" />
 
 Reverse (mobile):
 
-<img src="screenshot-mobile.png" />
+<img src="screenshot-1.png" />
 
 ## Live Instances
 
