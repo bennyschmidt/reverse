@@ -2,6 +2,10 @@
 
 Deploy a decentralized Twitter-like community in minutes.
 
+## Live Instances
+
+- https://reverse-social.vercel.app
+
 ## Screenshots
 
 Reverse (desktop):
@@ -11,10 +15,6 @@ Reverse (desktop):
 Reverse (mobile):
 
 <img src="screenshot-1.png" />
-
-## Live Instances
-
-None yet.
 
 ## Setup
 
