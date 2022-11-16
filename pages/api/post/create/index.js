@@ -6,7 +6,7 @@ const {
 import { v4 as uuidv4 } from 'uuid';
 
 import { getComments, getUsers } from '../../_blockchain';
-import { getStaticData, dequeue, enqueue } from '../../_data';
+import { dequeue, enqueue } from '../../_queue';
 import { sortByDate } from '../../_utils';
 
 import {
@@ -15,19 +15,17 @@ import {
 } from '../../_mailer.js';
 
 export default async function (req, res) {
-  const { tabs } = getStaticData();
-
   const comments = await getComments();
 
   const users = await getUsers();
 
-  if (!tabs || !comments?.transactions || !users?.transactions) {
+  if (!comments?.transactions || !users?.transactions) {
     res
       .status(200)
       .json({
-        isError: true,
+        status: 500,
+        ok: false,
         message: 'Error fetching data.',
-        tabs: [],
         posts: []
       });
 
@@ -36,31 +34,44 @@ export default async function (req, res) {
 
   const payload = JSON.parse(req.body);
   const posts = sortByDate(comments.transactions);
-  const text = payload.post.trim();
 
-  if (!text || text.length < 2 || text.length > 280) {
+  const {
+    username = '',
+    post = ''
+  } = payload;
+
+  const text = post.trim();
+
+  const invalidParam = (
+    !(/^.{2,280}$/i.test(text))
+      ? 'post format'
+      : !(/^[a-z0-9_.]{2,16}$/i.test(username))
+        ? 'username'
+        : false
+  );
+
+  if (invalidParam) {
     res
       .status(200)
       .json({
-        isError: true,
-        message: 'Posts must be 2-280 characters in length.',
-        tabs,
+        status: 400,
+        ok: false,
+        message: `Invalid ${invalidParam}.`,
         posts
       });
 
     return;
   }
 
-  const { username } = payload;
   const user = users.transactions.find(user => user.username === username);
 
   if (!user) {
     res
       .status(200)
       .json({
-        isError: true,
+        status: 404,
+        ok: false,
         message: 'User not found.',
-        tabs,
         posts
       });
 
@@ -91,8 +102,9 @@ export default async function (req, res) {
   res
     .status(200)
     .json({
+      status: 200,
+      ok: true,
       message: 'Authorization sent (check your email).',
-      tabs,
       posts
     });
 }

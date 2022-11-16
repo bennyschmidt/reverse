@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const validateEmailAddress = email => (
-  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)
+  /^[a-z0-9_\-.]{1,64}@[a-z0-9_\-.]{1,64}$/i.test(email)
 );
 
 const sendEmailAs = async (from, { to, subject, html }) => (

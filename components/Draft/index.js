@@ -2,23 +2,38 @@ import { useState } from 'react';
 
 import styles from '../../styles/Home.module.css';
 
-const PEER_SERVER = 'exactchange.network';
+const PEER_SERVER = 'reverse-social.vercel.app';
 
 export const Draft = ({
   onClick,
-  onPost
+  onPost,
+  showNotification
 }) => {
   const [username, setUsername] = useState('');
   const [post, setPost] = useState('');
   const [server, setServer] = useState(PEER_SERVER);
 
-  const onClickPost = () => (
+  const onClickPost = () => {
+    const invalidParam = (
+      !(/^.{2,280}$/i.test(post))
+        ? 'post format'
+        : !(/^[a-z0-9_.]{2,16}$/i.test(username))
+          ? 'username'
+          : false
+    );
+
+    if (invalidParam) {
+      showNotification(`Invalid ${invalidParam}.`);
+
+      return;
+    }
+
     onPost({
       username,
       post,
       server
     })
-  );
+  };
 
   return (
     <aside
@@ -29,6 +44,14 @@ export const Draft = ({
       <div role="dialog">
         <div role="form">
           <section>
+            <textarea
+              className={styles.input}
+              placeholder="Type something"
+              onChange={({ target: { value }}) => setPost(value)}
+              value={post}
+            />
+          </section>
+          <section>
             <label htmlFor="username">Post as:</label>
             <input
               name="username"
@@ -37,14 +60,6 @@ export const Draft = ({
               placeholder="Username"
               value={username}
               onChange={({ target: { value }}) => setUsername(value)}
-            />
-          </section>
-          <section>
-            <textarea
-              className={styles.input}
-              placeholder="Type something"
-              onChange={({ target: { value }}) => setPost(value)}
-              value={post}
             />
           </section>
           <section>

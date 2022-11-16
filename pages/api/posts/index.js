@@ -1,18 +1,16 @@
 import { getComments } from '../_blockchain';
-import { getStaticData } from '../_data';
 import { sortByDate } from '../_utils';
 
 export default async function (req, res) {
-  const { tabs } = getStaticData();
-
   const comments = await getComments();
 
-  if (!tabs || !comments?.transactions) {
+  if (!comments?.transactions) {
     res
       .status(200)
       .json({
+        status: 500,
+        ok: false,
         error: 'Error fetching data.',
-        tabs: [],
         posts: []
       });
 
@@ -24,7 +22,8 @@ export default async function (req, res) {
   res
     .status(200)
     .json({
-      tabs,
+      status: 200,
+      ok: true,
       posts
     });
 }

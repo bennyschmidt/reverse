@@ -1,3 +1,5 @@
+import { request } from './_utils';
+
 const {
   MAIL_NAME,
   DEREVA_API_KEY,
@@ -5,30 +7,14 @@ const {
   DEREVA_URI
 } = process.env;
 
-const fetchNonFungibleRecord = async ({
-  mediaAddress,
-  mediaType = 'json'
-}) => (
-  fetch(
-    `${DEREVA_URI}/file`,
-    {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        mediaAddress,
-        mediaType
-      })
-    }
-  )
-);
+const FS_URI = `${DEREVA_URI}/file`;
+const TRANSACTION_URI = `${DEREVA_URI}/transaction`;
+const TRANSACTIONS_URI = `${TRANSACTION_URI}s`;
 
 const getUsers = async () => {
   const users = [];
 
-  const transactions = await fetch(`${DEREVA_URI}/transactions`);
+  const transactions = await fetch(TRANSACTIONS_URI);
 
   if (!transactions?.ok) return;
 
@@ -43,7 +29,10 @@ const getUsers = async () => {
         .replace('::magnet:?xt=urn:drv/user:', '')
         .replace('&dn=User', '');
 
-      const user = await fetchNonFungibleRecord({ mediaAddress });
+      const user = await request(FS_URI, {
+        mediaAddress,
+        mediaType: 'json'
+      });
 
       if (!user?.ok) return;
 
@@ -71,7 +60,7 @@ const getUsers = async () => {
 const getComments = async () => {
   const comments = [];
 
-  const transactions = await fetch(`${DEREVA_URI}/transactions`);
+  const transactions = await fetch(TRANSACTIONS_URI);
 
   if (!transactions?.ok) return;
 
@@ -86,7 +75,10 @@ const getComments = async () => {
         .replace('::magnet:?xt=urn:drv/comment:', '')
         .replace('&dn=Comment', '');
 
-      const comment = await fetchNonFungibleRecord({ mediaAddress });
+      const comment = await request(FS_URI, {
+        mediaAddress,
+        mediaType: 'json'
+      });
 
       if (!comment?.ok) return;
 
@@ -112,21 +104,14 @@ const getComments = async () => {
 };
 
 const create = async transaction => (
-  fetch(`${DEREVA_URI}/transaction`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      apiKey: DEREVA_API_KEY,
-      username: MAIL_NAME,
-      recipient: MAIL_NAME,
-      recipientAddress: DEREVA_ADDRESS,
-      usdValue: 0,
-      drvValue: `data:drv/${transaction.type.toLowerCase()};json,${JSON.stringify(transaction)}`,
-      contract: 'DRV200'
-    })
+  request(TRANSACTION_URI, {
+    apiKey: DEREVA_API_KEY,
+    username: MAIL_NAME,
+    recipient: MAIL_NAME,
+    recipientAddress: DEREVA_ADDRESS,
+    usdValue: 0,
+    drvValue: `data:drv/${transaction.type.toLowerCase()};json,${JSON.stringify(transaction)}`,
+    contract: 'DRV200'
   })
 );
 

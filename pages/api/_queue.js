@@ -1,18 +1,5 @@
 import { getCollection } from './_mongo';
 
-const getStaticData = () => ({
-  tabs: [
-    {
-      text: 'Posts',
-      href: '/'
-    },
-    {
-      text: 'Settings',
-      href: '#'
-    }
-  ]
-});
-
 const enqueue = async (otp, content, collectionName) => {
   const collection = await getCollection(collectionName);
 
@@ -47,7 +34,6 @@ const find = async (otp, collectionName) => {
 };
 
 export {
-  getStaticData,
   dequeue,
   enqueue,
   find

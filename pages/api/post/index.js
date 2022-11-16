@@ -1,5 +1,8 @@
 export default function (req, res) {
   res
     .status(501)
-    .json({});
+    .json({
+      status: 501,
+      ok: false
+    });
 }

@@ -10,3 +10,17 @@ export const sortByDate = array => {
         : 0;
   });
 };
+
+export const request = async (url, body) => (
+  fetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  )
+);

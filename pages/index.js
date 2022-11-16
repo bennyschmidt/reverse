@@ -13,6 +13,7 @@ import {
 } from '../components';
 
 import {
+  TABS,
   TIMEOUT_INTERVAL,
   UNKNOWN_ERROR
 } from '../constants';
@@ -44,13 +45,12 @@ export default function Home () {
   const handleAPIResponse = async response => {
     const data = await response.json();
 
-    const { isError, message } = data;
+    const { message } = data;
 
     if (message) {
       showNotification(message);
     }
 
-    setTabs(data.tabs);
     setPosts(data.posts);
   };
 
@@ -66,7 +66,7 @@ export default function Home () {
       return handleAPIResponse(response);
     }
 
-    showNotification(UNKNOWN_ERROR);
+    showNotification(response?.message || UNKNOWN_ERROR);
   };
 
   const onCreateUser = async body => {
@@ -81,7 +81,7 @@ export default function Home () {
       return handleAPIResponse(response);
     }
 
-    showNotification(UNKNOWN_ERROR);
+    showNotification(response?.message || UNKNOWN_ERROR);
   };
 
   const onClickOverlay = ({ target: { id } }) => {
@@ -116,7 +116,7 @@ export default function Home () {
         return handleAPIResponse(response);
       }
 
-      showNotification(UNKNOWN_ERROR);
+      showNotification(response?.message || UNKNOWN_ERROR);
     };
 
     if (query.post) {
@@ -136,9 +136,10 @@ export default function Home () {
         return handleAPIResponse(response);
       }
 
-      showNotification(UNKNOWN_ERROR);
+      showNotification(response?.message || UNKNOWN_ERROR);
     };
 
+    setTabs(TABS);
     fetchPage();
   };
 
@@ -178,12 +179,14 @@ export default function Home () {
           <Register
             onClick={onClickOverlay}
             onRegister={onCreateUser}
+            showNotification={showNotification}
           />
         )}
         {isDraftShown && (
           <Draft
             onClick={onClickOverlay}
             onPost={onCreatePost}
+            showNotification={showNotification}
           />
         )}
         <PostButton onClick={onClickPostButton} />

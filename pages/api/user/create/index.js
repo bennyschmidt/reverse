@@ -6,7 +6,7 @@ const {
 import { v4 as uuidv4 } from 'uuid';
 
 import { getComments } from '../../_blockchain';
-import { getStaticData, dequeue, enqueue } from '../../_data';
+import { dequeue, enqueue } from '../../_queue';
 import { sortByDate } from '../../_utils';
 
 import {
@@ -15,17 +15,15 @@ import {
 } from '../../_mailer.js';
 
 export default async function (req, res) {
-  const { tabs } = getStaticData();
-
   const comments = await getComments();
 
-  if (!tabs || !comments?.transactions) {
+  if (!comments?.transactions) {
     res
       .status(200)
       .json({
-        isError: true,
+        status: 500,
+        ok: false,
         message: 'Error fetching data.',
-        tabs: [],
         posts: []
       });
 
@@ -35,8 +33,31 @@ export default async function (req, res) {
   const payload = JSON.parse(req.body);
   const posts = sortByDate(comments.transactions);
 
-  // TODO: Validate `email` & `username`
-  const { email, username } = payload;
+  const {
+    email = '',
+    username = ''
+  } = payload;
+
+  const invalidParam = (
+    !(/^[a-z0-9_\-.]{1,64}@[a-z0-9_\-.]{1,64}$/i.test(email))
+      ? 'email address'
+      : !(/^[a-z0-9_.]{2,16}$/i.test(username))
+        ? 'username'
+        : false
+  );
+
+  if (invalidParam) {
+    res
+      .status(200)
+      .json({
+        status: 400,
+        ok: false,
+        message: `Invalid ${invalidParam}.`,
+        posts
+      });
+
+    return;
+  }
 
   const otp = uuidv4();
 
@@ -45,8 +66,6 @@ export default async function (req, res) {
     subject: 'Confirm your email on Reverse.',
     html: `<a href="${HOST}?user=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
   });
-
-  setTimeout(() => dequeue(otp, 'users'), OTP_EXPIRATION);
 
   const content = {
     type: 'User',
@@ -57,11 +76,14 @@ export default async function (req, res) {
 
   await enqueue(otp, content, 'users');
 
+  setTimeout(() => dequeue(otp, 'users'), OTP_EXPIRATION);
+
   res
     .status(200)
     .json({
+      status: 200,
+      ok: true,
       message: 'Authorization sent (check your email).',
-      tabs,
       posts
     });
 }

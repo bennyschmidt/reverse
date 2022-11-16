@@ -4,17 +4,32 @@ import styles from '../../styles/Home.module.css';
 
 export const Register = ({
   onClick,
-  onRegister
+  onRegister,
+  showNotification
 }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
 
-  const onClickRegister = () => (
+  const onClickRegister = () => {
+    const invalidParam = (
+      !(/^[a-z0-9_\-.]{1,64}@[a-z0-9_\-.]{1,64}$/i.test(email))
+        ? 'email address'
+        : !(/^[a-z0-9_.]{2,16}$/i.test(username))
+          ? 'username'
+          : false
+    );
+
+    if (invalidParam) {
+      showNotification(`Invalid ${invalidParam}.`);
+
+      return;
+    }
+
     onRegister({
       username,
       email
-    })
-  );
+    });
+  };
 
   return (
     <aside
@@ -25,6 +40,16 @@ export const Register = ({
       <div role="dialog">
         <div role="form">
           <section>
+            <label htmlFor="email">Your email address:</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              className={styles.input}
+              placeholder="Email address"
+              onChange={({ target: { value }}) => setEmail(value)}
+              value={email}
+            />
             <label htmlFor="username">Your desired username:</label>
             <input
               name="username"
@@ -33,15 +58,6 @@ export const Register = ({
               placeholder="Username"
               onChange={({ target: { value }}) => setUsername(value)}
               value={username}
-            />
-            <label htmlFor="email">Your email address:</label>
-            <input
-              name="email"
-              id="email"
-              className={styles.input}
-              placeholder="Email address"
-              onChange={({ target: { value }}) => setEmail(value)}
-              value={email}
             />
           </section>
           <section>

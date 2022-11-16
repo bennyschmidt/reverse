@@ -1,19 +1,17 @@
 import { getComments, create } from '../../../_blockchain';
-import { getStaticData, find } from '../../../_data';
+import { find } from '../../../_queue';
 import { sortByDate } from '../../../_utils';
 
 export default async function (req, res) {
-  const { tabs } = getStaticData();
-
   const comments = await getComments();
 
-  if (!tabs || !comments?.transactions) {
+  if (!comments?.transactions) {
     res
       .status(200)
       .json({
-        isError: true,
+        status: 500,
+        ok: false,
         message: 'Error fetching data.',
-        tabs: [],
         posts: []
       });
 
@@ -29,9 +27,9 @@ export default async function (req, res) {
     res
       .status(200)
       .json({
-        isError: true,
+        status: 401,
+        ok: false,
         message: 'Invalid one-time password.',
-        tabs,
         posts
       });
 
@@ -43,8 +41,9 @@ export default async function (req, res) {
   res
     .status(200)
     .json({
+      status: 200,
+      ok: true,
       message: 'Registration successful! Sharing with peers...',
-      tabs,
       posts
     });
 }
