@@ -112,7 +112,14 @@ export default function Home () {
 
   const onChangeURL = () => {
     const handleQuery = async (type, otp) => {
-      const response = await fetch(`/api/${type}/create/confirm?${type}=${otp}`);
+      const response = await fetch(`/api/${type}/create/confirm`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ otp })
+      });
 
       if (response?.ok) {
         router.replace(

@@ -19,9 +19,9 @@ export default async function (req, res) {
   }
 
   const posts = sortByDate(comments.transactions);
-  const { user } = req.query;
+  const { otp } = req.body;
 
-  const content = await find(user, 'users');
+  const content = await find(otp, 'users');
 
   if (!content) {
     res
@@ -36,7 +36,7 @@ export default async function (req, res) {
     return;
   }
 
-  await create(content);
+  create(content);
 
   res
     .status(200)
