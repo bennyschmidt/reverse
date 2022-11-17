@@ -57,6 +57,10 @@ export default function Home () {
   const onCreatePost = async body => {
     const response = await fetch('/api/post/create', {
       method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(body)
     });
 
@@ -72,6 +76,10 @@ export default function Home () {
   const onCreateUser = async body => {
     const response = await fetch('/api/user/create', {
       method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(body)
     });
 
