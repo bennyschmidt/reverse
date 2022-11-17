@@ -4,8 +4,8 @@ Deploy a decentralized Twitter-like community in minutes.
 
 ## Live Instances
 
-- https://reverse-social.vercel.app
-- https://www.exactchange.network/reverse
+- https://reverse-social.vercel.app (SSR, cloud/serverless)
+- https://www.exactchange.network/reverse (standalone client & server apps)
 
 ## Screenshots
 
