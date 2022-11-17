@@ -30,7 +30,7 @@ export default async function (req, res) {
     return;
   }
 
-  const payload = JSON.parse(req.body);
+  const payload = req.body;
   const posts = sortByDate(comments.transactions);
 
   const {
