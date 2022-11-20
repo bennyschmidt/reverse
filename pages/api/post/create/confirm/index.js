@@ -36,7 +36,7 @@ export default async function (req, res) {
     return;
   }
 
-  create(content);
+  await create(content);
 
   res
     .status(200)
