@@ -176,7 +176,9 @@ export default function Home () {
     <div className={styles.container}>
       <Head>
         <title>Reverse</title>
+        <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/logo512.png" />
       </Head>
       <aside className={styles[`banner${message ? '-show' : ''}`]}>
         {message}
