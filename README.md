@@ -4,7 +4,7 @@ Deploy a decentralized Twitter-like community in minutes.
 
 # Contributing
 
-Take a look at [Contributing.md](contributing.md).
+Take a look at [Contributing.md](Contributing.md).
 
 ## Live Instances
 
