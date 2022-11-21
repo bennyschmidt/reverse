@@ -3,7 +3,7 @@ import styles from '../../styles/Home.module.css';
 const parseLinks = text => (
   text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
     url => (
-      `<a href="${url}">${url}</a>`
+      `<a href="${url}" target="_blank">${url}</a>`
     )
   )
 );
