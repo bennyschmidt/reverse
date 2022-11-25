@@ -103,6 +103,18 @@ const getComments = async () => {
   };
 };
 
+const getCommentsByUsername = async username => {
+  const comments = await getComments();
+
+  const userComments = comments.transactions.filter(({ author }) => (
+    author === username
+  ));
+
+  return {
+    transactions: userComments
+  };
+};
+
 const create = async transaction => (
   request(TRANSACTION_URI, {
     apiKey: DEREVA_API_KEY,
@@ -117,6 +129,7 @@ const create = async transaction => (
 
 export {
   getComments,
+  getCommentsByUsername,
   getUsers,
   create
 };

@@ -22,9 +22,9 @@ export const Posts = ({ posts }) => {
       {
         posts.map(({ author, text, date }) => (
           <div key={text} className={styles.card}>
-            <a href="#">{`@${author}`}</a>
+            <a href={`/${author}`}>{`@${author}`}</a>
             <p dangerouslySetInnerHTML={{ __html: parseLinks(text) }} />
-            <a href="#">{date}</a>
+            <a href={`/${author}`}>{date}</a>
           </div>
         ))
       }

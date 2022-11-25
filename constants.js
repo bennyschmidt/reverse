@@ -1,6 +1,6 @@
 export const TABS = [
   {
-    text: 'Posts',
+    text: 'Explore',
     href: '/'
   },
   {
