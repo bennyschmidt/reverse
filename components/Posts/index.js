@@ -1,14 +1,25 @@
+import { REVERSE_API_URL } from '../../constants';
+
 import styles from '../../styles/Home.module.css';
 
 const parseLinks = text => (
-  text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+  text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
     url => (
-      `<a href="${url}" target="_blank">${url}</a>`
+      `<a href="${url}">${url}</a>`
     )
   )
 );
 
-export const Posts = ({ posts }) => {
+export const Posts = ({ posts, profile }) => {
+  const Profile = () => (
+    <>
+      <div className={styles.profile}>
+        <div className={styles.avatar} />
+        <h1>@{profile}</h1>
+      </div>
+    </>
+  );
+
   return (
     <div>
       <p className={styles.description}>
@@ -19,6 +30,7 @@ export const Posts = ({ posts }) => {
           disabled
         />
       </p>
+      {profile && <Profile />}
       {
         posts.map(({ author, text, date }) => (
           <div key={text} className={styles.card}>

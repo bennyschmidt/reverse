@@ -47,14 +47,6 @@
   font-size: 1.5rem;
 }
 
-.code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-family: "Lucida Console", monospace;
-}
-
 .grid {
   display: grid;
   grid-template-columns: .5fr 1fr .5fr;
@@ -82,6 +74,29 @@
 .logo {
   margin: 2rem;
   text-align: center;
+}
+
+.banner,
+.banner-show {
+  position: fixed;
+  top: -5rem;
+  left: .5rem;
+  right: .5rem;
+  height: 3.5rem;
+  width: calc(100% - 1rem);
+  line-height: 3.5rem;
+  padding: 0 1rem;
+  border-radius: 1rem;
+  background: #0070f3;
+  color: white;
+  z-index: 1000;
+  opacity: 0;
+  transition: top .5s ease, opacity .5s ease;
+}
+
+.banner-show {
+  top: .25rem;
+  opacity: 1;
 }
 
 .search {
@@ -193,32 +208,38 @@ textarea.input {
   font: inherit;
 }
 
-.banner,
-.banner-show {
-  position: fixed;
-  top: -5rem;
-  left: .5rem;
-  right: .5rem;
-  height: 3.5rem;
-  width: calc(100% - 1rem);
-  line-height: 3.5rem;
-  padding: 0 1rem;
-  border-radius: 1rem;
-  background: #0070f3;
-  color: white;
-  z-index: 1000;
-  opacity: 0;
-  transition: top .5s ease, opacity .5s ease;
-}
-
-.banner-show {
-  top: .25rem;
-  opacity: 1;
-}
-
 .search,
 .tab:last-of-type a {
   cursor: not-allowed;
+}
+
+.profile {
+  margin: 1rem;
+}
+
+.profile h1 {
+  font-size: 1.4em;
+  margin: 2rem 0;
+}
+
+.profile .avatar {
+  width: 10rem;
+  height: 10rem;
+  border-width: 5px;
+  border-style: solid;
+}
+
+.avatar {
+  background: #ccc;
+  border-color: #eee;
+  border-radius: 100vw;
+  overflow: hidden;
+}
+
+.avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 @media (max-width: 974px) {
@@ -244,12 +265,24 @@ textarea.input {
     border-left: none;
     font-style: italic;
   }
+
+  .profile h1 {
+    font-size: 1.2em;
+    margin: 1rem 0;
+  }
+
+  .profile .avatar {
+    width: 7rem;
+    height: 7rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   .card,
+  .input,
   .footer,
-  .cta {
+  .cta,
+  .overlay > div {
     border-color: #222;
   }
 
@@ -267,10 +300,10 @@ textarea.input {
 
   .overlay > div {
     background: black;
-    border: 1px solid #222;
   }
 
-  .input {
-    border-color: #222;
+  .avatar {
+    background: #222;
+    border-color: #444;
   }
 }
