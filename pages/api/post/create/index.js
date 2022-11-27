@@ -40,7 +40,13 @@ export default async function (req, res) {
     post = ''
   } = payload;
 
-  const text = post.trim();
+  // Remove leading/trailing spaces & any HTML
+
+  const text = post
+    .trim()
+    .replace(/<[^>]*>?/gm, '');
+
+  // Validate length & format
 
   const invalidParam = (
     !(/^.{2,280}$/i.test(text))

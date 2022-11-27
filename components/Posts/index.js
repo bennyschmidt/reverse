@@ -2,13 +2,29 @@ import { REVERSE_API_URL } from '../../constants';
 
 import styles from '../../styles/Home.module.css';
 
-const parseLinks = text => (
-  text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
-    url => (
-      `<a href="${url}">${url}</a>`
-    )
-  )
+const parseYouTubeEmbed = url => url.replace(
+  /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+  '<iframe width="100%" height="360px" src=https://www.youtube-nocookie.com/embed/$1 frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>'
 );
+
+const parseMentions = text => (
+  text.replace(/@[0-9a-z](\.?[0-9a-z])*/g, mention => (
+    `<a href="${mention.substring(1)}">${mention}</a>`
+  ))
+);
+
+const parseLinks = text => (
+  text.match(/(https?|ftp|file)/ig)
+    ? (
+        text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
+        url => (
+          url.match(/youtube.com|youtu.be/)
+            ? parseYouTubeEmbed(url)
+            : `<a href="${url}" target="_blank">${url}</a>`
+        ))
+      )
+    : parseMentions(text)
+  );
 
 export const Posts = ({ posts, profile }) => {
   const Profile = () => (
