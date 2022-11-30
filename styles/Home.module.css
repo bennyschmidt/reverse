@@ -62,7 +62,6 @@
   border: 1px solid #eaeaea;
   border-radius: 1rem;
   transition: color 0.15s ease, border-color 0.15s ease;
-  line-break: anywhere;
 }
 
 .card p {
