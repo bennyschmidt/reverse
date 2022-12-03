@@ -1,12 +1,10 @@
 import styles from '../../styles/Home.module.css';
 
 const createIFrame = src => (
-  `<iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;></iframe>`
+  `<iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>`
 );
 
-const parseOdyseeEmbed = url => url.replace(
-  createIFrame(url.replace('.com', '.com/$/embed'))
-);
+const parseOdyseeEmbed = url => createIFrame(url.replace('.com', '.com/$/embed'));
 
 const parseYouTubeEmbed = url => url.replace(
   /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
@@ -26,7 +24,9 @@ const parseLinks = text => (
         url => (
           url.match(/youtube.com|youtu.be/)
             ? parseYouTubeEmbed(url)
-            : `<a href="${url}" target="_blank">${url}</a>`
+            : url.match('odysee.com')
+              ? parseOdyseeEmbed(url)
+              : `<a href="${url}" target="_blank">${url}</a>`
         ))
       )
     : parseMentions(text)
