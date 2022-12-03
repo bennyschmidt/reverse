@@ -1,10 +1,16 @@
-import { REVERSE_API_URL } from '../../constants';
-
 import styles from '../../styles/Home.module.css';
+
+const createIFrame = src => (
+  `<iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;></iframe>`
+);
+
+const parseOdyseeEmbed = url => url.replace(
+  createIFrame(url.replace('.com', '.com/$/embed'))
+);
 
 const parseYouTubeEmbed = url => url.replace(
   /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
-  '<iframe width="100%" height="360px" src=https://www.youtube-nocookie.com/embed/$1 frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>'
+  createIFrame('https://www.youtube-nocookie.com/embed/$1')
 );
 
 const parseMentions = text => (
