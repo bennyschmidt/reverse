@@ -21,7 +21,7 @@ const getUsers = async () => {
   const result = await transactions.json();
 
   await Promise.all(result.body
-    .filter(({ contract }) => contract === 'DRV200')
+    .filter(({ contract }) => contract === 'DRV201')
     .map(async transaction => {
       if (!transaction.drvValue.match(/drv\/user/)) return;
 
@@ -115,7 +115,10 @@ const getCommentsByUsername = async username => {
   };
 };
 
-const create = async transaction => (
+const create = async ({
+  transaction = {},
+  contract = 'DRV200'
+}) => (
   request(TRANSACTION_URI, {
     apiKey: DEREVA_API_KEY,
     username: MAIL_NAME,
@@ -123,7 +126,25 @@ const create = async transaction => (
     recipientAddress: DEREVA_ADDRESS,
     usdValue: 0,
     drvValue: `data:drv/${transaction.type.toLowerCase()};json,${JSON.stringify(transaction)}`,
-    contract: 'DRV200'
+    contract
+  })
+);
+
+const createComment = async content => (
+  create({
+    transaction: content
+  })
+);
+
+const createUser = async content => (
+  create({
+    transaction: {
+      ...content,
+
+      unique: content.username
+    },
+
+    contract: 'DRV201'
   })
 );
 
@@ -131,5 +152,6 @@ export {
   getComments,
   getCommentsByUsername,
   getUsers,
-  create
+  createComment,
+  createUser
 };

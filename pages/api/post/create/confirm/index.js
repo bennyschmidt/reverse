@@ -1,4 +1,4 @@
-import { getComments, create } from '../../../_blockchain';
+import { getComments, createComment } from '../../../_blockchain';
 import { find } from '../../../_queue';
 import { sortByDate } from '../../../_utils';
 
@@ -36,7 +36,7 @@ export default async function (req, res) {
     return;
   }
 
-  await create(content);
+  await createComment(content);
 
   res
     .status(200)
