@@ -246,6 +246,7 @@ textarea.input {
 
 .preview {
   display: block;
+  margin-top: 1rem;
   padding: 1rem;
   border: 1px solid #eaeaea;
   border-radius: 1rem;
@@ -254,7 +255,7 @@ textarea.input {
 .preview > img,
 .preview > .placeholder,
 .preview > iframe {
-  background: transparent;
+  background: white;
   object-fit: contain;
   display: inline-block;
   height: 360px;
