@@ -250,7 +250,8 @@ textarea.input {
 }
 
 .preview > img {
-  background: #eaeaea;
+  background: transparent;
+  object-fit: contain;
   display: inline-block;
   height: 360px;
   margin: 1rem auto 0;
@@ -305,8 +306,7 @@ textarea.input {
     background: #111;
   }
 
-  .search,
-  .preview > img {
+  .search {
     background: #222;
   }
 
