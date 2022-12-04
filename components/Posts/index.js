@@ -33,9 +33,13 @@ const parseLink = async (text, url) => {
         url.replace(/https?:\/\//, '')
       );
 
-      const imageSrc = (
-        shadowDocument?.querySelector('img')?.src
+      let imageSrc = (
+        shadowDocument?.querySelector('img')?.getAttribute('src')
       );
+
+      if (!imageSrc.substring(0, 8).match(/https?:\/\//)) {
+        imageSrc = `https://${url.split('/')[2]}${imageSrc.replace(/\.\./g, '')}`;
+      }
 
       link = (
         `<span class=${styles.preview}>${title}${
