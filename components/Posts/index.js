@@ -1,4 +1,8 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import styles from '../../styles/Home.module.css';
+
+const DOMRef = {};
 
 const createIFrame = src => (
   `<iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>`
@@ -38,7 +42,7 @@ const parseLink = async (text, url) => {
       ) || '';
 
       if (!imageSrc.substring(0, 8).match(/https?:\/\//)) {
-        imageSrc = `https://${url.split('/')[2]}${imageSrc.replace(/\.\./g, '')}`;
+        imageSrc = `https://${url.split('/')[2]}${imageSrc.replace(/\.\/|(\.\.)/g, '')}`;
       }
 
       link = (
@@ -50,7 +54,7 @@ const parseLink = async (text, url) => {
       );
 
       requestAnimationFrame(() => {
-        const preview = document.querySelector(`#${text.replace(/[\W_]+/g, '')}`);
+        const preview = document.getElementById(DOMRef[url]);
 
         if (preview) {
           preview.innerHTML = link;
@@ -64,24 +68,24 @@ const parseLink = async (text, url) => {
   return link;
 };
 
-const parseLinks = text => {
-  return (
-    text.match(/(https?|ftp|file)/ig)
-      ? (
-          text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
-          url => (
-            url.match(/youtube.com|youtu.be/)
-              ? parseYouTubeEmbed(url)
-              : url.match('odysee.com')
-                ? parseOdyseeEmbed(url)
-                : parseLink(text.replace(url, ''), url) && (
-                  `<a href="${url}" target="_blank" id="${text.replace(url, '').replace(/[\W_]+/g, '')}">${url}</a>`
-                )
-          ))
-        )
-      : parseMentions(text)
-    );
-};
+const parseLinks = text => (
+  text.match(/(https?|ftp|file)/ig)
+    ? (
+        text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
+        url => {
+          DOMRef[url] = `Text-${uuidv4()}`;
+
+          return url.match(/youtube.com|youtu.be/)
+            ? parseYouTubeEmbed(url)
+            : url.match('odysee.com')
+              ? parseOdyseeEmbed(url)
+              : parseLink(text.replace(url, ''), url) && (
+                `<a href="${url}" target="_blank" id="${DOMRef[url]}">${url}</a>`
+              )
+        })
+      )
+    : parseMentions(text)
+  );
 
 export const Posts = ({ posts, profile }) => {
   const Profile = () => (
