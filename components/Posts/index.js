@@ -4,15 +4,17 @@ import styles from '../../styles/Home.module.css';
 
 const DOMRef = {};
 
-const createIFrame = src => (
-  `<iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>`
+const createIFramePreview = src => (
+  `<span class=${styles.preview}>
+    <iframe width="100%" height="360px" src="${src}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;"></iframe>
+  </span>`
 );
 
-const parseOdyseeEmbed = url => createIFrame(url.replace('.com', '.com/$/embed'));
+const parseOdyseeEmbed = url => createIFramePreview(url.replace('.com', '.com/$/embed'));
 
 const parseYouTubeEmbed = url => url.replace(
   /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
-  createIFrame('https://www.youtube-nocookie.com/embed/$1')
+  createIFramePreview('https://www.youtube-nocookie.com/embed/$1')
 );
 
 const parseMentions = text => (
@@ -37,19 +39,20 @@ const parseLink = async (text, url) => {
         url.replace(/https?:\/\//, '')
       );
 
-      let imageSrc = (
+      const imageSrc = (
         shadowDocument?.querySelector('img')?.getAttribute('src')
       ) || '';
 
-      if (!imageSrc.substring(0, 8).match(/https?:\/\//)) {
-        imageSrc = `https://${url.split('/')[2]}${imageSrc.replace(/\.\/|(\.\.)/g, '')}`;
-      }
+      const isWebImage = imageSrc.substring(0, 4).match(/http/);
+      const contentPreviewAttrs = 'width="100%" height="100%"';
 
       link = (
-        `<span class=${styles.preview}>${title}${
-          imageSrc
-            ? `<img src="${imageSrc}" alt="${title}" width="100%" height="100%" />`
-            : ''
+        `<span class=${styles.preview}>${
+          title
+        }${
+          isWebImage
+            ? `<img src="${imageSrc}" alt="${title}" ${contentPreviewAttrs} />`
+            : `<span class=${styles.placeholder} ${contentPreviewAttrs}></span>`
         }</span>`
       );
 
@@ -61,9 +64,7 @@ const parseLink = async (text, url) => {
         }
       });
     }
-  } catch (error) {
-    console.warn(error);
-  }
+  } catch (error) {}
 
   return link;
 };
@@ -79,7 +80,8 @@ const parseLinks = text => (
             ? parseYouTubeEmbed(url)
             : url.match('odysee.com')
               ? parseOdyseeEmbed(url)
-              : parseLink(text.replace(url, ''), url) && (
+              : (
+                parseLink(text.replace(url, ''), url) &&
                 `<a href="${url}" target="_blank" id="${DOMRef[url]}">${url}</a>`
               )
         })

@@ -10,6 +10,7 @@ const {
 const FS_URI = `${DEREVA_URI}/file`;
 const TRANSACTION_URI = `${DEREVA_URI}/transaction`;
 const TRANSACTIONS_URI = `${TRANSACTION_URI}s`;
+const LIMIT = 25;
 
 const getUsers = async () => {
   const users = [];
@@ -99,19 +100,18 @@ const getComments = async () => {
   );
 
   return {
-    transactions: comments
+    transactions: comments.slice(-LIMIT)
   };
 };
 
 const getCommentsByUsername = async username => {
   const comments = await getComments();
 
-  const userComments = comments.transactions.filter(({ author }) => (
-    author === username
-  ));
+  const userComments = comments.transactions
+    .filter(({ author }) => author === username)
 
   return {
-    transactions: userComments
+    transactions: userComments.slice(-LIMIT)
   };
 };
 
