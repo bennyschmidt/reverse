@@ -17,20 +17,67 @@ const parseMentions = text => (
   ))
 );
 
-const parseLinks = text => (
-  text.match(/(https?|ftp|file)/ig)
-    ? (
-        text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
-        url => (
-          url.match(/youtube.com|youtu.be/)
-            ? parseYouTubeEmbed(url)
-            : url.match('odysee.com')
-              ? parseOdyseeEmbed(url)
-              : `<a href="${url}" target="_blank">${url}</a>`
-        ))
-      )
-    : parseMentions(text)
-  );
+const parseLink = async (text, url) => {
+  let link = `<a href="${url}" target="_blank">${url}</a>`;
+
+  try {
+    const response = await fetch(url);
+
+    if (response?.ok) {
+      const result = await response.text();
+
+      const shadowDocument = new DOMParser().parseFromString(result, 'text/html');
+
+      const title = (
+        shadowDocument?.querySelector('title')?.innerText ||
+        url.replace(/https?:\/\//, '')
+      );
+
+      const imageSrc = (
+        shadowDocument?.querySelector('img')?.src
+      );
+
+      link = (
+        `<span class=${styles.preview}>${title}${
+          imageSrc
+            ? `<img src=${imageSrc} alt=${title} width="100%" height="100%" />`
+            : ''
+        }</span>`
+      );
+
+      requestAnimationFrame(() => {
+        const preview = document.querySelector(`#${text.replace(/[\W_]+/g, '')}`);
+
+        if (preview) {
+          preview.innerHTML = link;
+        }
+      });
+    }
+  } catch (error) {
+    console.warn(error);
+  }
+
+  return link;
+};
+
+const parseLinks = text => {
+  return (
+    text.match(/(https?|ftp|file)/ig)
+      ? (
+          text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
+          url => (
+            url.match(/youtube.com|youtu.be/)
+              ? parseYouTubeEmbed(url)
+              : url.match('odysee.com')
+                ? parseOdyseeEmbed(url)
+                : parseLink(text.replace(url, ''), url) && (
+                  `<a href="${url}" target="_blank" id="${text.replace(url, '').replace(/[\W_]+/g, '')}">${url}</a>`
+                )
+          ))
+        )
+      : parseMentions(text)
+    );
+};
 
 export const Posts = ({ posts, profile }) => {
   const Profile = () => (

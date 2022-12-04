@@ -241,6 +241,21 @@ textarea.input {
   object-fit: cover;
 }
 
+.preview {
+  display: block;
+  padding: 10px;
+  border: 1px solid #eaeaea;
+  border-radius: 1rem;
+  margin: 2rem auto 0;
+}
+
+.preview > img {
+  background: #eaeaea;
+  display: inline-block;
+  height: 360px;
+  margin: 1rem auto 0;
+}
+
 @media (max-width: 974px) {
   .grid {
     width: 100%;
@@ -281,7 +296,8 @@ textarea.input {
   .input,
   .footer,
   .cta,
-  .overlay > div {
+  .overlay > div,
+  .preview {
     border-color: #222;
   }
 
@@ -289,7 +305,8 @@ textarea.input {
     background: #111;
   }
 
-  .search {
+  .search,
+  .preview > img {
     background: #222;
   }
 
