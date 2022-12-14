@@ -10,7 +10,7 @@ const {
 const FS_URI = `${DEREVA_URI}/file`;
 const TRANSACTION_URI = `${DEREVA_URI}/transaction`;
 const TRANSACTIONS_URI = `${TRANSACTION_URI}s`;
-const LIMIT = 25;
+const LIMIT = 200;
 
 const getUsers = async () => {
   const users = [];
