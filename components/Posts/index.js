@@ -76,7 +76,7 @@ const parseLink = async (text, url) => {
       }${
         isWebImage
           ? `<img src="${imageSrc}" alt="${title}" ${contentPreviewAttrs} />`
-          : `<span class=${styles.placeholder} ${contentPreviewAttrs}></span>`
+          : ''
       }</span>`
     );
   } catch (error) {}
