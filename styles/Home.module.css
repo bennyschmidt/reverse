@@ -246,7 +246,7 @@ textarea.input {
 
 .preview {
   display: block;
-  margin-top: 1rem;
+  margin: 1rem auto;
   padding: 1rem;
   border: 1px solid #eaeaea;
   border-radius: 1rem;
