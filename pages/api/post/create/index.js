@@ -96,11 +96,19 @@ export default async function (req, res) {
 
   setTimeout(() => dequeue(otp, 'posts'), OTP_EXPIRATION);
 
+  // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
+
+  const date = new Date()
+    .toISOString()
+    .replace('T', ' ')
+    .substr(0, 19)
+    .replace(/-/g, '/');
+
   const content = {
     type: 'Comment',
     author: username,
     text,
-    date: new Date().toLocaleString()
+    date
   };
 
   await enqueue(otp, content, 'posts');
