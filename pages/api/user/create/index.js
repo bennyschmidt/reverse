@@ -5,7 +5,7 @@ const {
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { getComments } from '../../_blockchain';
+import { getComments, getUsers } from '../../_blockchain';
 import { dequeue, enqueue } from '../../_queue';
 import { sortByDate } from '../../_utils';
 
@@ -16,6 +16,8 @@ import {
 
 export default async function (req, res) {
   const comments = await getComments();
+
+  const users = await getUsers();
 
   if (!comments?.transactions) {
     res
@@ -59,6 +61,19 @@ export default async function (req, res) {
     return;
   }
 
+  if (users.transactions.find(user => user.username === username)) {
+    res
+      .status(200)
+      .json({
+        status: 401,
+        ok: false,
+        message: 'That username is taken.',
+        posts
+      });
+
+    return;
+  }
+
   const otp = uuidv4();
 
   await sendEmail({
@@ -67,11 +82,19 @@ export default async function (req, res) {
     html: `<a href="${HOST}?user=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
   });
 
+  // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
+
+  const date = new Date()
+    .toISOString()
+    .replace('T', ' ')
+    .substr(0, 19)
+    .replace(/-/g, '/');
+
   const content = {
     type: 'User',
     username,
     email,
-    date: new Date().toLocaleString()
+    date
   };
 
   await enqueue(otp, content, 'users');

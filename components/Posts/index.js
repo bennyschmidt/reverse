@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from '../../styles/Home.module.css';
 
+const PAGE_LIMIT = 10;
 const DOMRef = {};
 
 const createIFramePreview = src => (
@@ -133,13 +134,19 @@ export const Posts = ({ posts, profile }) => {
       </p>
       {profile && <Profile />}
       {
-        posts.map(({ author, text, date }) => (
-          <div key={text} className={styles.card}>
-            <a href={`/${author}`}>{`@${author}`}</a>
-            <p dangerouslySetInnerHTML={{ __html: parseLinks(text) }} />
-            <a href={`/${author}`}>{date}</a>
-          </div>
-        ))
+        posts.slice(0, PAGE_LIMIT).map(({ author, text, date }) => {
+          const localDateTime = (
+            new Date(`${date} UTC`).toLocaleString()
+          );
+
+          return (
+            <div key={text} className={styles.card}>
+              <a href={`/${author}`}>{`@${author}`}</a>
+              <p dangerouslySetInnerHTML={{ __html: parseLinks(text) }} />
+              <a href={`/${author}`}>{localDateTime}</a>
+            </div>
+          );
+        })
       }
     </div>
   );
