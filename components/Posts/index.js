@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from '../../styles/Home.module.css';
 
-const PAGE_LIMIT = 10;
+const PAGE_LIMIT = 20;
 const DOMRef = {};
 
 const createIFramePreview = src => (
