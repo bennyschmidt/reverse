@@ -29,7 +29,7 @@ const parseLinks = text => (
         text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig,
         url => {
           return url.match(/youtube.com|youtu.be/)
-            ? parseYouTubeEmbed(url)
+            ? parseYouTubeEmbed(url.split('&')[0])
             : url.match('odysee.com')
               ? parseOdyseeEmbed(url)
               : `<span class=${styles.preview}><a href="${url}" target="_blank">${url}</a></span>`
