@@ -1,7 +1,6 @@
 import { request } from './_utils';
 
 const {
-  MAIL_NAME,
   DEREVA_API_KEY,
   DEREVA_ADDRESS,
   DEREVA_URI
@@ -121,8 +120,7 @@ const create = async ({
 }) => (
   request(TRANSACTION_URI, {
     apiKey: DEREVA_API_KEY,
-    username: MAIL_NAME,
-    recipient: MAIL_NAME,
+    senderAddress: DEREVA_ADDRESS,
     recipientAddress: DEREVA_ADDRESS,
     usdValue: 0,
     drvValue: `data:drv/${transaction.type.toLowerCase()};json,${JSON.stringify(transaction)}`,
