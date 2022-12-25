@@ -9,7 +9,6 @@ Take a look at [Contributing.md](Contributing.md).
 ## Live Instances
 
 - https://reverse-social.vercel.app (SSR, cloud/serverless)
-- https://www.exactchange.network/reverse (standalone client & server apps)
 
 ## Screenshots
 
