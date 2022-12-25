@@ -2,14 +2,14 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import {
+  Auth,
   Draft,
   Logo,
   Navigation,
   Overlay,
   PostButton,
   Posts,
-  Register,
-  SignupButton
+  Register
 } from '../components';
 
 import { UNKNOWN_ERROR } from '../constants';
@@ -23,8 +23,10 @@ export default function Home ({
 }) {
   const router = useRouter();
 
+  const [user, setUser] = useState();
   const [isDraftShown, setIsDraftShown] = useState(false);
   const [isRegisterShown, setIsRegisterShown] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const { pathname, query } = router;
   const { posts, tabs } = state;
@@ -36,6 +38,74 @@ export default function Home ({
   const onClickRegisterButton = () => (
     setIsRegisterShown(true)
   );
+
+  const onClickLoginButton = async addressOrEmail => {
+    const isAddress = addressOrEmail.length === 36;
+    const isEmail = (/^[a-z0-9_\-.]{1,64}@[a-z0-9_\-.]{1,64}$/i.test(addressOrEmail));
+
+    if (isAddress || isEmail) {
+      setIsFetching(true);
+
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          [isAddress ? 'address' : 'email']: addressOrEmail
+        })
+      });
+
+      setIsFetching(false);
+
+      if (response?.ok) {
+        const { message } = await response.json();
+
+        showNotification(message);
+      }
+    }
+  };
+
+  const onAuthQuery = async ({ address, token }) => {
+    setIsFetching(true);
+
+    const response = await fetch('/api/auth/confirm', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        address,
+        token
+      })
+    });
+
+    if (response?.ok) {
+      const result = await response.json();
+
+      router.replace(
+        pathname,
+        undefined,
+        { shallow: true }
+      );
+
+      setIsFetching(false);
+      setUser(result.user);
+
+      localStorage.setItem('user', JSON.stringify({
+        address,
+        token
+      }));
+
+      return;
+    }
+
+    localStorage.clear();
+    setUser(null);
+    setIsFetching(false);
+  };
 
   const onChangeURL = () => {
     const handleQuery = async (type, otp) => {
@@ -61,18 +131,25 @@ export default function Home ({
       showNotification(response?.message || UNKNOWN_ERROR);
     };
 
-    if (query.post) {
-      handleQuery('post', query.post);
-    }
-
     if (query.user) {
       handleQuery('user', query.user);
+    }
+
+    if (query.address && query.token) {
+      onAuthQuery({
+        address: query.address,
+        token: query.token
+      });
     }
   };
 
   const onLoad = () => {
     const fetchPage = async () => {
+      setIsFetching(true);
+
       const response = await fetch('/api/posts');
+
+      setIsFetching(false);
 
       if (response?.ok) {
         return handleAPIResponse(response);
@@ -81,6 +158,44 @@ export default function Home ({
       showNotification(response?.message || UNKNOWN_ERROR);
     };
 
+    const fetchUser = async () => {
+      const cachedUser = JSON.parse(
+        localStorage.getItem('user') || '{}'
+      );
+
+      if (cachedUser) {
+        setIsFetching(true);
+
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            address: cachedUser.address,
+            token: cachedUser.token
+          })
+        });
+
+        if (response?.ok) {
+          const result = await response.json();
+
+          setUser(result.user);
+          setIsFetching(false);
+
+          return;
+        }
+
+        localStorage.clear();
+        setUser(null);
+        setIsFetching(false);
+      }
+    };
+
+    if (!user) {
+      fetchUser();
+    }
 
     fetchPage();
   };
@@ -89,7 +204,7 @@ export default function Home ({
     onChangeURL,
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathname, query]
+    [pathname, query, onAuthQuery]
   );
 
   useEffect(
@@ -104,8 +219,10 @@ export default function Home ({
     setIsDraftShown,
     isRegisterShown,
     setIsRegisterShown,
+    setIsFetching,
     handleAPIResponse,
-    showNotification
+    showNotification,
+    user
   };
 
   return (
@@ -113,11 +230,15 @@ export default function Home ({
       <Logo />
       <main className={styles.main}>
         <Overlay {...overlayProps} />
-        <PostButton onClick={onClickPostButton} />
+        {user && <PostButton disabled={isFetching} onClick={onClickPostButton} />}
         <div className={styles.grid}>
           <Navigation tabs={tabs} />
           <Posts posts={posts} />
-          <SignupButton onClick={onClickRegisterButton} />
+          {!user && <Auth
+            onClickSignUp={onClickRegisterButton}
+            onClickSignIn={onClickLoginButton}
+            isFetching={isFetching}
+          />}
         </div>
       </main>
       <footer className={styles.footer}>

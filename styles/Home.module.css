@@ -139,11 +139,17 @@
   border: 1px solid #eaeaea;
   border-radius: 1rem;
   padding: 2rem;
-  max-height: 10rem;
+  max-height: 25rem;
+  overflow-y: auto;
 }
 
 .cta h3 {
   font-size: 1.2em;
+  margin: 2rem 0 1rem;
+}
+
+.cta input {
+  border-radius: 100vw;
   margin: 0 0 1rem;
 }
 
