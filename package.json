@@ -1,6 +1,6 @@
 {
   "name": "reverse",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "cryptography-utilities": "^0.0.2",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "mongodb": "^4.11.0",

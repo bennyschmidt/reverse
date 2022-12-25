@@ -40,12 +40,14 @@ const getUsers = async () => {
 
       const {
         username,
+        unique,
         email,
         date
       } = JSON.parse(body);
 
       users.push({
         username,
+        address: unique,
         email,
         date
       });
@@ -137,9 +139,11 @@ const createComment = async content => (
 const createUser = async content => (
   create({
     transaction: {
-      ...content,
-
-      unique: content.username
+      type: 'User',
+      username: content.username,
+      email: content.email,
+      date: content.date,
+      unique: content.address
     },
 
     contract: 'DRV201'

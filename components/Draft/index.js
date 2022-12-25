@@ -7,9 +7,9 @@ const PEER_SERVER = 'reverse-social.vercel.app';
 export const Draft = ({
   onClick,
   onPost,
-  showNotification
+  showNotification,
+  user
 }) => {
-  const [username, setUsername] = useState('');
   const [post, setPost] = useState('');
   const [server, setServer] = useState(PEER_SERVER);
 
@@ -17,9 +17,7 @@ export const Draft = ({
     const invalidParam = (
       !(/^.{2,280}$/i.test(post))
         ? 'post format'
-        : !(/^[a-z0-9_.]{2,16}$/i.test(username))
-          ? 'username'
-          : false
+        : false
     );
 
     if (invalidParam) {
@@ -29,10 +27,10 @@ export const Draft = ({
     }
 
     onPost({
-      username,
+      token: user.token,
       post,
       server
-    })
+    });
   };
 
   return (
@@ -49,17 +47,6 @@ export const Draft = ({
               placeholder="Type something"
               onChange={({ target: { value }}) => setPost(value)}
               value={post}
-            />
-          </section>
-          <section>
-            <label htmlFor="username">Post as:</label>
-            <input
-              name="username"
-              id="username"
-              className={styles.input}
-              placeholder="Username"
-              value={username}
-              onChange={({ target: { value }}) => setUsername(value)}
             />
           </section>
           <section>

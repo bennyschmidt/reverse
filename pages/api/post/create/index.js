@@ -5,8 +5,13 @@ const {
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { getComments, getUsers } from '../../_blockchain';
-import { dequeue, enqueue } from '../../_queue';
+import {
+  getComments,
+  getUsers,
+  createComment
+} from '../../_blockchain';
+
+import { getSession } from '../../_session';
 import { sortByDate } from '../../_utils';
 
 import {
@@ -32,13 +37,26 @@ export default async function (req, res) {
     return;
   }
 
-  const payload = req.body;
-  const posts = sortByDate(comments.transactions);
-
   const {
-    username = '',
+    token = '',
     post = ''
-  } = payload;
+  } = req.body;
+
+  const session = await getSession(token);
+
+  const user = users.transactions.find(user => user.address === session.address);
+
+  if (!user?.address) {
+    return res
+      .status(401)
+      .json({
+        status: 401,
+        ok: false,
+        message: 'Unauthorized.'
+      });
+  }
+
+  const posts = sortByDate(comments.transactions);
 
   // Remove leading/trailing spaces & any HTML
 
@@ -51,9 +69,7 @@ export default async function (req, res) {
   const invalidParam = (
     !(/^.{2,280}$/i.test(text))
       ? 'post format'
-      : !(/^[a-z0-9_.]{2,16}$/i.test(username))
-        ? 'username'
-        : false
+      : false
   );
 
   if (invalidParam) {
@@ -69,33 +85,6 @@ export default async function (req, res) {
     return;
   }
 
-  const user = users.transactions.find(user => user.username === username);
-
-  if (!user) {
-    res
-      .status(200)
-      .json({
-        status: 404,
-        ok: false,
-        message: 'User not found.',
-        posts
-      });
-
-    return;
-  }
-
-  const { email } = user;
-
-  const otp = uuidv4();
-
-  await sendEmail({
-    to: email,
-    subject: 'Confirm your post on Reverse.',
-    html: `<a href="${HOST}?post=${otp}" target="_blank">Authorize Post</a><br />If you do not authorize this post, <strong>do not</strong> click the link.`
-  });
-
-  setTimeout(() => dequeue(otp, 'posts'), OTP_EXPIRATION);
-
   // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
 
   const date = new Date()
@@ -106,19 +95,23 @@ export default async function (req, res) {
 
   const content = {
     type: 'Comment',
-    author: username,
+    author: user.username,
     text,
     date
   };
 
-  await enqueue(otp, content, 'posts');
+  await createComment(content);
 
   res
     .status(200)
     .json({
       status: 200,
       ok: true,
-      message: 'Authorization sent (check your email).',
-      posts
+      message: 'Post successful! Sharing with peers...',
+      posts: [
+        content,
+
+        ...posts
+      ]
     });
 }

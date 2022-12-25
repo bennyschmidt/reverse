@@ -14,10 +14,14 @@ export const Overlay = ({
   setIsDraftShown,
   isRegisterShown,
   setIsRegisterShown,
+  setIsFetching,
   handleAPIResponse, 
-  showNotification 
+  showNotification,
+  user
 }) => {
   const onCreatePost = async body => {
+    setIsFetching(true);
+
     const response = await fetch('/api/post/create', {
       method: 'POST',
       headers: {
@@ -26,6 +30,8 @@ export const Overlay = ({
       },
       body: JSON.stringify(body)
     });
+
+    setIsFetching(false);
 
     if (response?.ok) {
       setIsDraftShown(false);
@@ -37,6 +43,8 @@ export const Overlay = ({
   };
 
   const onCreateUser = async body => {
+    setIsFetching(true);
+
     const response = await fetch('/api/user/create', {
       method: 'POST',
       headers: {
@@ -45,6 +53,8 @@ export const Overlay = ({
       },
       body: JSON.stringify(body)
     });
+
+    setIsFetching(false);
 
     if (response?.ok) {
       setIsRegisterShown(false);
@@ -74,11 +84,12 @@ export const Overlay = ({
           showNotification={showNotification}
         />
       )}
-      {isDraftShown && (
+      {user && isDraftShown && (
         <Draft
           onClick={onClickOverlay}
           onPost={onCreatePost}
           showNotification={showNotification}
+          user={user}
         />
       )}
     </aside>

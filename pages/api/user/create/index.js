@@ -4,6 +4,7 @@ const {
 } = process.env;
 
 import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from 'cryptography-utilities';
 
 import { getComments, getUsers } from '../../_blockchain';
 import { dequeue, enqueue } from '../../_queue';
@@ -75,11 +76,12 @@ export default async function (req, res) {
   }
 
   const otp = uuidv4();
+  const address = generateUUID();
 
   await sendEmail({
     to: email,
     subject: 'Confirm your email on Reverse.',
-    html: `<a href="${HOST}?user=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
+    html: `Public address: <strong>${address}</strong><br /><a href="${HOST}?user=${otp}" target="_blank">Register "${username}"</a><br />If you do not authorize this, <strong>do not</strong> click the link.`
   });
 
   // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
@@ -93,6 +95,7 @@ export default async function (req, res) {
   const content = {
     type: 'User',
     username,
+    address,
     email,
     date
   };
