@@ -38,7 +38,12 @@ const parseLinks = text => (
     : parseMentions(text)
   );
 
-export const Posts = ({ posts, profile }) => {
+export const Posts = ({
+  posts,
+  profile,
+  user,
+  onDeletePost = () => null
+}) => {
   const Profile = () => (
     <>
       <div className={styles.profile}>
@@ -47,6 +52,8 @@ export const Posts = ({ posts, profile }) => {
       </div>
     </>
   );
+
+  const isProfileUser = user && user.username === profile;
 
   return (
     <div>
@@ -60,7 +67,7 @@ export const Posts = ({ posts, profile }) => {
       </p>
       {profile && <Profile />}
       {
-        posts.slice(0, PAGE_LIMIT).map(({ author, text, date }) => {
+        posts.slice(0, PAGE_LIMIT).map(({ id, author, text, date }) => {
           const localDateTime = (
             new Date(`${date} UTC`).toLocaleString()
           );
@@ -69,7 +76,10 @@ export const Posts = ({ posts, profile }) => {
             <div key={text} className={styles.card}>
               <a href={`/${author}`}>{`@${author}`}</a>
               <p dangerouslySetInnerHTML={{ __html: parseLinks(text) }} />
-              <a href={`/${author}`}>{localDateTime}</a>
+              <div className={styles.info}>
+                <a href={`/${author}`}>{localDateTime}</a>
+                {isProfileUser && <button onClick={onDeletePost(id)}>Delete</button>}
+              </div>
             </div>
           );
         })
