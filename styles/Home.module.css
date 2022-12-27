@@ -274,6 +274,25 @@ textarea.input {
   background: #eaeaea;
 }
 
+.info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info > button {
+  background: none;
+  color: red;
+  font-weight: 400;
+  width: auto;
+  padding: 0;
+  opacity: .5;
+  display: none;
+}
+
+.card:hover .info > button {
+  display: block;
+}
+
 @media (max-width: 974px) {
   .grid {
     width: 100%;

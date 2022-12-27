@@ -1,4 +1,5 @@
 import { request } from './_utils';
+import { getCollection } from './_mongo';
 
 const {
   DEREVA_API_KEY,
@@ -93,12 +94,25 @@ const getComments = async () => {
       } = JSON.parse(body);
 
       comments.push({
+        id: transaction.hash,
         author,
         text,
         date
       });
     })
   );
+
+  const collection = await getCollection('deleted');
+  const deletedPosts = await collection.find().toArray();
+
+  for (const deleted of deletedPosts) {
+    comments.splice(
+      comments.indexOf(
+        comments.find(({ id }) => id === deleted.postId)
+      ),
+      1
+    );
+  }
 
   return {
     transactions: comments.slice(-LIMIT)

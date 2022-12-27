@@ -242,7 +242,9 @@ export default function Home ({
         </div>
       </main>
       <footer className={styles.footer}>
-        <a href="https://github.com/bennyschmidt/reverse" target="_blank" rel="noreferrer">Fork on GitHub</a>
+        <a href="https://github.com/bennyschmidt/reverse" target="_blank" rel="noreferrer">
+          Fork on GitHub
+        </a>
       </footer>
     </>
   );

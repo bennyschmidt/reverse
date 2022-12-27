@@ -68,6 +68,28 @@ export default function UserProfile ({
     }
   };
 
+  const onClickDeletePost = postId => async () => {
+    if (!user?.token) return;
+
+    const response = await fetch('/api/post/delete', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: user.token,
+        postId
+      })
+    });
+
+    if (response?.ok) {
+      const { message } = await response.json();
+
+      showNotification(message);
+    }
+  };
+
   const onLoad = () => {
     const { username } = query;
 
@@ -104,7 +126,7 @@ export default function UserProfile ({
         localStorage.getItem('user') || '{}'
       );
 
-      if (cachedUser) {
+      if (cachedUser?.address) {
         setIsFetching(true);
 
         const response = await fetch('/api/auth', {
@@ -164,7 +186,12 @@ export default function UserProfile ({
         {user && <PostButton disabled={isFetching} onClick={onClickPostButton} />}
         <div className={styles.grid}>
           <Navigation tabs={tabs} />
-          <Posts posts={posts} profile={profile} />
+          <Posts
+            posts={posts}
+            profile={profile}
+            user={user}
+            onDeletePost={onClickDeletePost}
+          />
           {!user && <Auth
             onClickSignUp={onClickRegisterButton}
             onClickSignIn={onClickLoginButton}
@@ -173,7 +200,9 @@ export default function UserProfile ({
         </div>
       </main>
       <footer className={styles.footer}>
-        <a href="https://github.com/bennyschmidt/reverse" target="_blank" rel="noreferrer">Fork on GitHub</a>
+        <a href="https://github.com/bennyschmidt/reverse" target="_blank" rel="noreferrer">
+          Fork on GitHub
+        </a>
       </footer>
     </>
   );
