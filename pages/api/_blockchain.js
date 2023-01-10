@@ -96,7 +96,7 @@ const getComments = async () => {
 
       comments.push({
         id: transaction.hash,
-        author: transaction.recipientAddress,
+        author,
         text,
         date: datetime
       });
