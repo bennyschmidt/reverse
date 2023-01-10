@@ -62,18 +62,18 @@ export default async function (req, res) {
     return;
   }
 
-  if (users.transactions.find(user => user.username === username)) {
-    res
-      .status(200)
-      .json({
-        status: 401,
-        ok: false,
-        message: 'That username is taken.',
-        posts
-      });
+  // if (users.transactions.find(user => user.displayName === userame)) {
+  //   res
+  //     .status(200)
+  //     .json({
+  //       status: 401,
+  //       ok: false,
+  //       message: 'That username is taken.',
+  //       posts
+  //     });
 
-    return;
-  }
+  //   return;
+  // }
 
   const otp = uuidv4();
   const address = generateUUID();
@@ -86,18 +86,16 @@ export default async function (req, res) {
 
   // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
 
-  const date = new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .substr(0, 19)
-    .replace(/-/g, '/');
+  const datetime = new Date().toISOString();
 
   const content = {
-    type: 'User',
-    username,
-    address,
-    email,
-    date
+    type: 'Alias',
+    name: address,
+    auth: {
+      type: 'email',
+      value: email
+    },
+    datetime
   };
 
   await enqueue(otp, content, 'users');

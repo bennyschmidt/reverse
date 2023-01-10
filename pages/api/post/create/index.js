@@ -87,17 +87,13 @@ export default async function (req, res) {
 
   // Formatted UTC (MM/DD/YYYY, hh:mm:ss)
 
-  const date = new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .substr(0, 19)
-    .replace(/-/g, '/');
+  const datetime = new Date().toISOString();
 
   const content = {
     type: 'Comment',
     author: user.username,
     text,
-    date
+    datetime
   };
 
   await createComment(content);

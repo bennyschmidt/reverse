@@ -69,7 +69,7 @@ export const Posts = ({
       {
         posts.slice(0, PAGE_LIMIT).map(({ id, author, text, date }) => {
           const localDateTime = (
-            new Date(`${date} UTC`).toLocaleString()
+            new Date(date).toLocaleString()
           );
 
           return (

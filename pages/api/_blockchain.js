@@ -10,7 +10,7 @@ const {
 const FS_URI = `${DEREVA_URI}/file`;
 const TRANSACTION_URI = `${DEREVA_URI}/transaction`;
 const TRANSACTIONS_URI = `${TRANSACTION_URI}s`;
-const LIMIT = 200;
+const LIMIT = 1000;
 
 const getUsers = async () => {
   const users = [];
@@ -22,13 +22,13 @@ const getUsers = async () => {
   const result = await transactions.json();
 
   await Promise.all(result.body
-    .filter(({ contract }) => contract === 'DRV201')
+    .filter(({ contract }) => contract === 'DRV200')
     .map(async transaction => {
-      if (!transaction.drvValue.match(/drv\/user/)) return;
+      if (!transaction.drvValue.match(/drv\/alias/)) return;
 
       const mediaAddress = transaction.drvValue
-        .replace('::magnet:?xt=urn:drv/user:', '')
-        .replace('&dn=User', '');
+        .replace('::magnet:?xt=urn:drv/alias:', '')
+        .replace('&dn=Alias', '');
 
       const user = await request(FS_URI, {
         mediaAddress,
@@ -40,17 +40,18 @@ const getUsers = async () => {
       const { body } = await user.json();
 
       const {
-        username,
-        unique,
-        email,
-        date
+        name,
+        auth: {
+          value: email
+        },
+        datetime
       } = JSON.parse(body);
 
       users.push({
-        username,
-        address: unique,
+        username: email,
+        address: name,
         email,
-        date
+        date: datetime
       });
     })
   );
@@ -90,14 +91,14 @@ const getComments = async () => {
       const {
         author,
         text,
-        date
+        datetime
       } = JSON.parse(body);
 
       comments.push({
         id: transaction.hash,
-        author,
+        author: transaction.recipientAddress,
         text,
-        date
+        date: datetime
       });
     })
   );
@@ -152,15 +153,7 @@ const createComment = async content => (
 
 const createUser = async content => (
   create({
-    transaction: {
-      type: 'User',
-      username: content.username,
-      email: content.email,
-      date: content.date,
-      unique: content.address
-    },
-
-    contract: 'DRV201'
+    transaction: content
   })
 );
 
