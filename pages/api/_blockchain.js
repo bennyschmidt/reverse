@@ -40,6 +40,7 @@ const getUsers = async () => {
       const { body } = await user.json();
 
       const {
+        address,
         name,
         auth: {
           value: email
@@ -48,8 +49,8 @@ const getUsers = async () => {
       } = JSON.parse(body);
 
       users.push({
-        username: email,
-        address: name,
+        address,
+        username: name,
         email,
         date: datetime
       });
