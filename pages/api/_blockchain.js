@@ -137,6 +137,12 @@ const create = async ({
   contract = 'DRV200'
 }) => (
   request(TRANSACTION_URI, {
+
+    /**
+     * If running your own Dereva instance, create DEREVA_API_KEY in your
+     * env as any secure string (like a generated UUID).
+     **/
+
     apiKey: DEREVA_API_KEY,
 
     /**
@@ -144,14 +150,16 @@ const create = async ({
      * (the new record is minted by, and transferred to DEREVA_ADDRESS).
      *
      * For users to own their content, at least recipientAddress should
-     * be set as the address of the content creator.
+     * be set as the user's address.
      *
-     * To officialize content while preserving user ownership,
-     * the platform/host can serve as a content mint (senderAddress),
-     * that transfers ownership to the content creator (recipientAddress).
-     * Alternatively, both senderAddress & recipientAddress can be the content
-     * creator's address, if it's important to show that they minted, or
-     * originated it.
+     * To officialize content while preserving user ownership, the
+     * platform/host can serve as a content mint (senderAddress), that
+     * transfers ownership to the content creator (recipientAddress).
+     * Alternatively, both senderAddress & recipientAddress can be the
+     * content creator's address, if it's important to show that they
+     * minted, or originated it, and also now own it. Yet another approach
+     * might be that content creators are minters (senderAddress) who, by
+     * posting, are giving the content to the platform (recipientAddress).
      **/
 
     senderAddress: DEREVA_ADDRESS,
