@@ -138,8 +138,30 @@ const create = async ({
 }) => (
   request(TRANSACTION_URI, {
     apiKey: DEREVA_API_KEY,
+
+    /**
+     * The platform/host is set to "own" the content by default
+     * (the new record is minted by, and transferred to DEREVA_ADDRESS).
+     *
+     * For users to own their content, at least recipientAddress should
+     * be set as the address of the content creator.
+     *
+     * To officialize content while preserving user ownership,
+     * the platform/host can serve as a content mint (senderAddress),
+     * that transfers ownership to the content creator (recipientAddress).
+     * Alternatively, both senderAddress & recipientAddress can be the content
+     * creator's address, if it's important to show that they minted, or
+     * originated it.
+     **/
+
     senderAddress: DEREVA_ADDRESS,
     recipientAddress: DEREVA_ADDRESS,
+
+    /**
+     * usdValue doesn't matter for non-fungible records, but it can be used
+     * as metadata, to associate the post with some price, fee, sale, etc.
+     **/
+
     usdValue: 0,
     drvValue: `data:drv/${transaction.type.toLowerCase()};json,${JSON.stringify(transaction)}`,
     contract
