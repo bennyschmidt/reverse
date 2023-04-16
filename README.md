@@ -1,6 +1,6 @@
 # Reverse Social Media
 
-Deploy a decentralized Twitter-like community in minutes. 
+A decentralized Twitter-like social media site. 
 
 # Contributing
 
@@ -31,7 +31,7 @@ MONGO_URI=
 DB_NAME=
 ```
 
-Dereva is the underlying content blockchain where users and posts are retained in a peer-to-peer network.
+[Dereva](https://github.com/bennyschmidt/dereva) is the underlying content blockchain where users and posts are retained in a peer-to-peer network.
 
 ```
 DEREVA_API_KEY=
@@ -39,7 +39,7 @@ DEREVA_URI=
 DEREVA_ADDRESS=
 ```
 
-Nodemailer is used for email dispatch.
+[Nodemailer](https://github.com/nodemailer/nodemailer) is used for email dispatch.
 
 ```
 MAIL_HOST=
@@ -63,7 +63,7 @@ npm run dev
 ## Build & run
 
 ```
-  npm run build
+npm run build
 ```
 
 `npm start` to run the build
