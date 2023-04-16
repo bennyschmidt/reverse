@@ -26,15 +26,22 @@ const find = async (otp, collectionName) => {
 
   const item = await collection.findOne({ otp });
 
-  if (item) {
+  return item?.content;
+};
+
+const findAndDequeue = async (otp, collectionName) => {
+  const content = await find(otp, collectionName);
+
+  if (content) {
     dequeue(otp, collectionName);
   }
 
-  return item?.content;
+  return content;
 };
 
 export {
   dequeue,
   enqueue,
-  find
+  find,
+  findAndDequeue
 };

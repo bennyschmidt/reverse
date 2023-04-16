@@ -108,12 +108,14 @@ const getComments = async () => {
   const deletedPosts = await collection.find().toArray();
 
   for (const deleted of deletedPosts) {
-    comments.splice(
-      comments.indexOf(
-        comments.find(({ id }) => id === deleted.postId)
-      ),
-      1
-    );
+    const deletedPost = comments.find(({ id }) => id === deleted.postId);
+
+    if (deletedPost) {
+      comments.splice(
+        comments.findIndex(({ id }) => id === deletedPost.postId),
+        1
+      );
+    }
   }
 
   return {
