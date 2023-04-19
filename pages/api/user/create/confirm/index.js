@@ -1,5 +1,5 @@
 import { getComments, createUser } from '../../../_blockchain';
-import { find } from '../../../_queue';
+import { find, dequeue } from '../../../_queue';
 import { sortByDate } from '../../../_utils';
 
 export default async function (req, res) {
@@ -21,6 +21,8 @@ export default async function (req, res) {
   const posts = sortByDate(comments.transactions);
   const { otp } = req.body;
 
+  console.log(otp);
+
   const content = await find(otp, 'users');
 
   if (!content) {
@@ -37,6 +39,8 @@ export default async function (req, res) {
   }
 
   await createUser(content);
+
+  await dequeue(otp, 'users');
 
   res
     .status(200)

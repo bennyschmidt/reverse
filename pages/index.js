@@ -109,6 +109,7 @@ export default function Home ({
 
   const onChangeURL = () => {
     const handleQuery = async (type, otp) => {
+
       const response = await fetch(`/api/${type}/create/confirm`, {
         method: 'POST',
         headers: {
@@ -119,12 +120,6 @@ export default function Home ({
       });
 
       if (response?.ok) {
-        router.replace(
-          pathname,
-          undefined,
-          { shallow: true }
-        );
-
         return handleAPIResponse(response);
       }
 
@@ -133,6 +128,12 @@ export default function Home ({
 
     if (query.user) {
       handleQuery('user', query.user);
+
+      router.replace(
+        pathname,
+        undefined,
+        { shallow: true }
+      );
     }
 
     if (query.address && query.token) {

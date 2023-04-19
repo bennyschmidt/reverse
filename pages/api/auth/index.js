@@ -69,6 +69,14 @@ module.exports = async (req, res) => {
           user
         });
     }
+
+    return res
+      .status(401)
+      .json({
+        status: 401,
+        ok: false,
+        message: 'Unauthorized.'
+      });
   } else {
     const sessionToken = uuidv4();
 

@@ -90,7 +90,8 @@ export default async function (req, res) {
 
   const content = {
     type: 'Alias',
-    name: address,
+    name: email.split('@')[0],
+    address,
     auth: {
       type: 'email',
       value: email

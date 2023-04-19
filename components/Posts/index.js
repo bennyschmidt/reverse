@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from 'cryptography-utilities';
 
 import styles from '../../styles/Home.module.css';
 
@@ -73,7 +73,7 @@ export const Posts = ({
           );
 
           return (
-            <div key={text} className={styles.card}>
+            <div key={generateUUID()} className={styles.card}>
               <a href={`/${author}`}>{`@${author}`}</a>
               <p dangerouslySetInnerHTML={{ __html: parseLinks(text) }} />
               <div className={styles.info}>
