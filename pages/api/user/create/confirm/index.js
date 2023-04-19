@@ -21,8 +21,6 @@ export default async function (req, res) {
   const posts = sortByDate(comments.transactions);
   const { otp } = req.body;
 
-  console.log(otp);
-
   const content = await find(otp, 'users');
 
   if (!content) {
